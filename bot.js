@@ -11,7 +11,7 @@ export default class ChatBot {
         this.clientName = clientName
         this.chatHistory = null;
         this.prompt = null;
-        this.pathHistory = path.join(bussines, 'conversations', `${clientName}.json`);
+        this.pathHistory = path.join("bussines_chat", bussines, 'conversations', `${clientName}.json`);
     }
 
     async getChatHistory() {
@@ -19,7 +19,7 @@ export default class ChatBot {
     }
 
     async getPrompt() {
-        this.prompt = await leerArchivo(path.join("./", this.bussines, 'prompt.txt'));
+        this.prompt = await leerArchivo(path.join("bussines_chat", this.bussines, 'prompt.txt'));
     }
 
     async sendMessageUser(msg) {
