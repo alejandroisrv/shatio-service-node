@@ -1,0 +1,29 @@
+{
+  "name": "shatio",
+  "version": "1.0.0",
+  "description": "service connect between fb",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "OPEN_AI_KEY=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 nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/alejandroisrv/shatio-service-node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alejandroisrv/shatio-service-node/issues"
+  },
+  "homepage": "https://github.com/alejandroisrv/shatio-service-node#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "langchain": "0.0.146",
+    "openai": "^4.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
