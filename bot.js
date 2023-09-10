@@ -22,20 +22,28 @@ export default class ChatBot {
         this.prompt = await leerArchivo(path.join("bussines_chat", this.bussines, 'prompt.txt'));
     }
 
-    async sendMessageUser(msg) {
-        let messages = [];
-        if (this.chatHistory) {
-            messages = JSON.parse(this.chatHistory);
-        } else {
-            await this.getPrompt();
-            messages = [{ role: 'system', content: this.prompt }];
-        }
+    async getResponseByChatGPT(msg) {
+        console.log(msg);
 
-        messages.push({ role: 'user', content: msg });
+        let messages = [];
+        try {
+            if (this.chatHistory) {
+                messages = JSON.parse(this.chatHistory);
+            } else {
+                await this.getPrompt();
+                messages = [{ role: 'system', content: this.prompt }];
+            }
+
+            messages.push({ role: 'user', content: msg });
+
+        } catch (error) {
+            console.error("Se ha producido un error al intentar obtener el prompt")
+        }
 
         const completion = await this.openai.chat.completions.create({
             messages,
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-3.5-turbo-16k-0613',
+            temperature: 0.1,
         });
 
         messages.push(completion.choices[0].message)
