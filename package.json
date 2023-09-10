@@ -2,11 +2,11 @@
   "name": "shatio",
   "version": "1.0.0",
   "description": "service connect between fb",
-  "main": "index.js",
+  "main": "index.mjs",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ACCESS_TOKEN_FB=EAADkyZBtVhZBABO4L5y9td0IeFLqRU80KF9WZBQZAJ3LUnMy6Ig106obJSDQmdWVmTZChIYwbAIY3afm3ZAHrMGeZBCOPZB64l2PS3LdUblrvH8nDwW3Q32gnHc8W9o5vZBY5p9b3lDq1xlioc7N84EhQwAjQNv77ssRG1RDnV4EkyWP7E8iPamKkVv0IxHBc3f0I8I1pqdUX45xZBAvYj OPEN_AI_KEY=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 nodemon index.js"
+    "dev": "ACCESS_TOKEN_FB=EAADkyZBtVhZBABO4L5y9td0IeFLqRU80KF9WZBQZAJ3LUnMy6Ig106obJSDQmdWVmTZChIYwbAIY3afm3ZAHrMGeZBCOPZB64l2PS3LdUblrvH8nDwW3Q32gnHc8W9o5vZBY5p9b3lDq1xlioc7N84EhQwAjQNv77ssRG1RDnV4EkyWP7E8iPamKkVv0IxHBc3f0I8I1pqdUX45xZBAvYj OPEN_AI_KEY=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 nodemon index.mjs"
   },
   "repository": {
     "type": "git",
