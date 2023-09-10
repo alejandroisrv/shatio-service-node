@@ -8,7 +8,7 @@ import { sendMessageFacebook } from './facebook-api-graph.js';
 
 const port = 3000
 
-app.get('/webhook', (req, res) => {
+app.get('/webhook/:path', (req, res) => {
     const tokenVerificacion = 'stringUnico';
     const { hubMode, hubChallenge, hubVerifyToken } = req.query;
     if (hubMode === 'subscribe' && hubVerifyToken === tokenVerificacion) {
