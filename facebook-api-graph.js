@@ -1,7 +1,5 @@
 
-
-
-export const sendMessageFacebook = async (senderId, respuesta) => {
+const sendMessageFacebook = async (senderId, respuesta) => {
     const accessToken = process.env.ACCESS_TOKEN_FB;
     const endpoint = `https://graph.facebook.com/v17.0/me/messages?access_token=${accessToken}`;
     const body = {
@@ -16,6 +14,7 @@ export const sendMessageFacebook = async (senderId, respuesta) => {
 
     const rs = await fetch(endpoint, options);
     const datos = await rs.json();
-    console.log(datos);
     return datos;
-}
+};
+
+module.exports = { sendMessageFacebook };

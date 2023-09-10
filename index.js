@@ -1,12 +1,8 @@
+const app = require('./app.js');
+const ChatBot = require('./bot.js');
+const { sendMessageFacebook } = require('./facebook-api-graph.js');
 
-import app from './app.js'
-import ChatBot from './bot.js'
-import { sendMessageFacebook } from './facebook-api-graph.js';
-
-// import { leerArchivo } from "./utils.js";
-// const propmtBase = await leerArchivo("./propmt.txt")
-
-const port = 3000
+const port = 3000;
 
 app.get('/webhook/:path', (req, res) => {
     const tokenVerificacion = 'stringUnico';
@@ -21,17 +17,16 @@ app.get('/webhook/:path', (req, res) => {
 });
 
 app.post('/webhook/:path', async (req, res) => {
-
     const { path } = req.params;
     const { sender, message } = req.body.entry[0].messaging[0];
     const senderId = sender.id;
 
-    let respuesta = "";
+    let respuesta = '';
 
     try {
-        const chatBot = new ChatBot(path, senderId)
+        const chatBot = new ChatBot(path, senderId);
         await chatBot.getChatHistory();
-        respuesta = await chatBot.getResponseByChatGPT(message.text)
+        respuesta = await chatBot.getResponseByChatGPT(message.text);
     } catch (error) {
         console.error(error);
         res.status(500).send('Ha ocurrido un error al procesar mensaje del usuario.');
@@ -45,9 +40,9 @@ app.post('/webhook/:path', async (req, res) => {
         res.status(500).send('Ha ocurrido un error al enviar el mensaje a Facebook.');
     }
 
-    res.send({ msg: "Mensaje enviado con exito" })
-})
+    res.send({ msg: 'Mensaje enviado con exito' });
+});
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+    console.log(`Example app listening on port ${port}`);
+});
