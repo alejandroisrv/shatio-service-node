@@ -1,3 +1,5 @@
 /node_modules
 /bussines_chat
 /tmp
+
+*.log
