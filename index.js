@@ -25,6 +25,8 @@ app.get('/w/:page', (req, res) => {
     }
 });
 
+const chatbot = new ChatBot("tecnowins");
+
 app.post('/w/:path', async (req, res) => {
     const { path } = req.params;
     const { sender, message } = req.body.entry[0].messaging[0];
@@ -33,7 +35,6 @@ app.post('/w/:path', async (req, res) => {
     let respuesta = '';
 
     try {
-        const chatbot = new ChatBot(path);
         respuesta = await chatbot.call(senderId, message.text);
     } catch (error) {
         console.error(error);
