@@ -1,8 +1,8 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
+const logger = require('./logger');
 
 class Database {
     constructor() {
-
         this.connection = mysql.createConnection({
             host: 'localhost',
             user: process.env.USER_DB,
@@ -12,6 +12,8 @@ class Database {
             connectionLimit: 10,
             queueLimit: 0
         });
+
+        logger.info('Conexión exitosa a la base de datos');
     }
 
     connect() {
@@ -27,53 +29,40 @@ class Database {
     }
 
     async getPrompt(business) {
-        return new Promise((resolve, reject) => {
-            this.connection.query(
+        try {
+            const [results, fields] = await this.connection.promise().query(
                 'SELECT prompt FROM prompts WHERE business = ?',
-                [business],
-                (error, results) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        const prompt = results.length > 0 ? results[0].prompt : null;
-                        resolve(prompt);
-                    }
-                }
+                [business]
             );
-        });
+            const prompt = results.length > 0 ? results[0].prompt : null;
+            return prompt;
+        } catch (error) {
+            throw error;
+        }
     }
 
-    saveMemory(userName, memory) {
-        return new Promise((resolve, reject) => {
-            this.connection.query(
+    async saveMemory(userName, memory) {
+        try {
+            await this.connection.promise().query(
                 'INSERT INTO memories (user_name, memory) VALUES (?, ?) ON DUPLICATE KEY UPDATE memory = ?',
-                [userName, JSON.stringify(memory), JSON.stringify(memory)],
-                (error) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve();
-                    }
-                }
+                [userName, JSON.stringify(memory), JSON.stringify(memory)]
             );
-        });
+        } catch (error) {
+            throw error;
+        }
     }
 
-    loadMemory(userName) {
-        return new Promise((resolve, reject) => {
-            this.connection.query(
+    async loadMemory(userName) {
+        try {
+            const [results, fields] = await this.connection.promise().query(
                 'SELECT memory FROM memories WHERE user_name = ?',
-                [userName],
-                (error, results) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        const memory = results.length > 0 ? JSON.parse(results[0].memory) : null;
-                        resolve(memory);
-                    }
-                }
+                [userName]
             );
-        });
+            const memory = results.length > 0 ? JSON.parse(results[0].memory) : null;
+            return memory;
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

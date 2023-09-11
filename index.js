@@ -35,9 +35,11 @@ app.post('/w/:path', async (req, res) => {
     let respuesta = '';
 
     try {
+        logger.info(`Mensaje de texto recibido del usuario ${senderId}: ${message.text}`);
         respuesta = await chatbot.call(senderId, message.text);
     } catch (error) {
-        console.error(error);
+        console.error();
+        logger.error(error);
         res.status(500).send('Ha ocurrido un error al procesar mensaje del usuario.');
     }
 
