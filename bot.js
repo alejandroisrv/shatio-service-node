@@ -23,31 +23,33 @@ class ChatBot {
     }
 
     async getResponseByChatGPT(msg) {
-        console.log(msg);
 
         let messages = [];
+ 
         try {
             if (this.chatHistory) {
                 messages = JSON.parse(this.chatHistory);
-            } else {
-                await this.getPrompt();
-                messages = [{ role: 'system', content: this.prompt }];
             }
 
+            messages.unshift({ role: 'system', content: this.prompt })
             messages.push({ role: 'user', content: msg });
+
         } catch (error) {
             console.error('Se ha producido un error al intentar obtener el prompt');
         }
 
         const completion = await this.openai.chat.completions.create({
             messages,
-            model: 'gpt-3.5-turbo-16k-0613',
-            temperature: 0.1,
+            model: 'gpt-3.5-turbo',
+            temperature: 0,
+            max_tokens: 300,
+            frequency_penalty: 0,
+            presence_penalty: 0,
         });
 
         messages.push(completion.choices[0].message);
 
-        escribirArchivo(this.pathHistory, JSON.stringify(messages));
+        escribirArchivo(this.pathHistory, JSON.stringify(messages.slice(1)));
 
         console.log(completion);
 
