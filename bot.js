@@ -3,6 +3,7 @@ const { ConversationSummaryMemory } = require('langchain/memory');
 const { LLMChain } = require('langchain/chains');
 const { PromptTemplate } = require('langchain/prompts');
 const Database = require('./database');
+const logger = require('./logger');
 
 class ChatBot {
     constructor(business) {
