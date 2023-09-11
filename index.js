@@ -39,8 +39,7 @@ app.post('/w/:path', async (req, res) => {
         logger.info(`Mensaje de texto recibido del usuario ${senderId}: ${message.text}`);
         respuesta = await chatbot.call(senderId, message.text);
     } catch (error) {
-        console.error();
-        logger.error(error);
+        logger.error("Error al procesar mensaje del usuario: " + error);
         res.status(500).send('Ha ocurrido un error al procesar mensaje del usuario.');
     }
 
@@ -48,7 +47,7 @@ app.post('/w/:path', async (req, res) => {
         await sendMessageFacebook(senderId, respuesta.text);
         res.status(200).send({ msg: 'Mensaje enviado con exito' });
     } catch (error) {
-        console.error(error);
+        logger.error("Error al enviar mensaje FB: " + error);
         res.status(500).send('Ha ocurrido un error al enviar el mensaje a Facebook.');
     }
 });
