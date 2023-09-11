@@ -33,23 +33,26 @@ app.post('/w/:path', async (req, res) => {
     let respuesta = '';
 
     try {
-        const chatBot = new ChatBot(path, senderId);
-        await chatBot.getChatHistory();
-        respuesta = await chatBot.getResponseByChatGPT(message.text);
+
+        const chatbot = new ChatBot(path);
+        const response = await chatbot.call(senderId, message.text);
+        console.log("mensaje", message.text, "respuesta", response.text)
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Ha ocurrido un error al procesar mensaje del usuario.');
     }
 
     try {
-        const respuestaFB = await sendMessageFacebook(senderId, respuesta);
+        const respuestaFB = await sendMessageFacebook(senderId, respuesta.text);
         res.send({ fb: respuestaFB });
+        console.log("mensaje", message.text, "respuesta", respuesta.txt)
     } catch (error) {
         console.error(error);
         res.status(500).send('Ha ocurrido un error al enviar el mensaje a Facebook.');
     }
 
-    res.send({ msg: 'Mensaje enviado con exito' });
+    res.u(200).send({ msg: 'Mensaje enviado con exito' });
 });
 
 app.listen(port, () => {

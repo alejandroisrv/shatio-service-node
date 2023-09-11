@@ -1,57 +1,44 @@
-const OpenAI = require('openai');
-const { escribirArchivo, leerArchivo } = require('./utils.js');
-const path = require('path');
+const { ChatOpenAI } = require('langchain/chat_models/openai');
+const { ConversationSummaryMemory } = require('langchain/memory');
+const { LLMChain } = require('langchain/chains');
+const { PromptTemplate } = require('langchain/prompts');
+const Database = require('./database');
 
 class ChatBot {
-    constructor(bussines, clientName) {
-        this.openai = new OpenAI({
-            apiKey: process.env.OPEN_AI_KEY,
-        });
+    constructor(bussines) {
+        this.db = new Database();
         this.bussines = bussines;
-        this.clientName = clientName;
-        this.chatHistory = null;
-        this.prompt = null;
-        this.pathHistory = path.join('bussines_chat', bussines, 'conversations', `${clientName}.json`);
+        this.sessions = new Map();
     }
 
-    async getChatHistory() {
-        this.chatHistory = await leerArchivo(this.pathHistory);
-    }
+    async initializeSession(userName) {
+        await this.db.connect();
 
-    async getPrompt() {
-        this.prompt = await leerArchivo(path.join('bussines_chat', this.bussines, 'prompt.txt'));
-    }
+        const llm = new ChatOpenAI({ modelName: 'gpt-3.5-turbo', temperature: 0, openAIApiKey: process.env.OPEN_AI_KEY, topP: 0.3 });
+        const memory = new ConversationSummaryMemory({ memoryKey: 'chat_history', llm });
+        const promptBasic = this.db.getPrompt(this.bussines);
+        const prompt = PromptTemplate.fromTemplate(`${promptBasic}\nCurrent conversation:\n{chat_history}\nHuman: {input}\nAI:`);
+        const chain = new LLMChain({ llm, prompt, memory });
 
-    async getResponseByChatGPT(msg) {
-        console.log(msg);
-
-        let messages = [];
-        try {
-            if (this.chatHistory) {
-                messages = JSON.parse(this.chatHistory);
-            } else {
-                await this.getPrompt();
-                messages = [{ role: 'system', content: this.prompt }];
-            }
-
-            messages.push({ role: 'user', content: msg });
-        } catch (error) {
-            console.error('Se ha producido un error al intentar obtener el prompt');
+        const savedMemory = await this.db.loadMemory(userName);
+        if (savedMemory) {
+            memory.loadMemoryVariables(savedMemory);
         }
 
-        const completion = await this.openai.chat.completions.create({
-            messages,
-            model: 'gpt-3.5-turbo-16k-0613',
-            temperature: 0.1,
-        });
+        this.sessions.set(userName, { chain, memory });
+    }
 
-        messages.push(completion.choices[0].message);
+    async call(userName, input) {
+        if (!this.sessions.has(userName)) {
+            await this.initializeSession(userName);
+        }
 
-        escribirArchivo(this.pathHistory, JSON.stringify(messages));
+        const session = this.sessions.get(userName);
+        const res = await session.chain.call({ input });
+        const memoryData = await session.memory.loadMemoryVariables({});
+        await this.db.saveMemory(userName, memoryData);
 
-        console.log(completion);
-
-        return completion.choices[0].message.content;
+        return res;
     }
 }
 

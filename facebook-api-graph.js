@@ -6,6 +6,7 @@ const sendMessageFacebook = async (senderId, respuesta) => {
         recipient: { id: senderId },
         message: { text: respuesta },
     };
+    
     const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
