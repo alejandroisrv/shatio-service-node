@@ -1,6 +1,7 @@
 const app = require('./app.js');
 const ChatBot = require('./bot.js');
 const { sendMessageFacebook } = require('./facebook-api-graph.js');
+const logger = require('./logger.js');
 
 const port = 3000;
 
