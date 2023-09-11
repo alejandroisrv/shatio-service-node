@@ -16,10 +16,9 @@ class ChatBot {
         logger.info(`initializeSession:  ${userName}`);
         const llm = new ChatOpenAI({ modelName: 'gpt-3.5-turbo', temperature: 0, openAIApiKey: process.env.OPEN_AI_KEY, topP: 0.3 });
         const savedMemory = await this.db.loadMemory(userName);
-        logger.info(`savedMemory ${savedMemory}`);
-        logger.info(`chat_history:  ${JSON.parse(savedMemory)}`);
-        
-        const memory = new ConversationSummaryMemory({ memoryKey: 'chat_history', llm, chatHistory: JSON.parse(savedMemory) });
+        logger.info(`chat_history:  ${JSON.parse(savedMemory[0])}`);
+
+        const memory = new ConversationSummaryMemory({ memoryKey: 'chat_history', llm, chatHistory: JSON.parse(savedMemory[0]) });
         const promptBasic = await this.db.getPrompt(this.business);
         const prompt = PromptTemplate.fromTemplate(`${promptBasic}\nCurrent conversation:\n{chat_history}\nHuman: {input}\nAI:`);
         const chain = new LLMChain({ llm, prompt, memory });
