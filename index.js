@@ -52,7 +52,7 @@ app.post('/w/:path', async (req, res) => {
         res.status(500).send('Ha ocurrido un error al enviar el mensaje a Facebook.');
     }
 
-    res.u(200).send({ msg: 'Mensaje enviado con exito' });
+    res.status(200).send({ msg: 'Mensaje enviado con exito' });
 });
 
 app.listen(port, () => {
