@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 
 class Database {
     constructor() {
-        
+
         this.connection = mysql.createConnection({
             host: 'localhost',
             user: process.env.USER_DB,

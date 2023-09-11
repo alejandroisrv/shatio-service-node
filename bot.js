@@ -11,20 +11,21 @@ class ChatBot {
         this.sessions = new Map();
     }
 
-
     async initializeSession(userName) {
         await this.db.connect();
 
         const llm = new ChatOpenAI({ modelName: 'gpt-3.5-turbo', temperature: 0, openAIApiKey: process.env.OPEN_AI_KEY, topP: 0.3 });
+
         const memory = new ConversationSummaryMemory({ memoryKey: 'chat_history', llm });
-        const promptBasic = await this.db.getPrompt(this.business);
-        const prompt = PromptTemplate.fromTemplate(`${promptBasic}\nCurrent conversation:\n{chat_history}\nHuman: {input}\nAI:`);
-        const chain = new LLMChain({ llm, prompt, memory });
 
         const savedMemory = await this.db.loadMemory(userName);
         if (savedMemory) {
             memory.setMemoryVariables(JSON.parse(savedMemory));
         }
+
+        const promptBasic = await this.db.getPrompt(this.business);
+        const prompt = PromptTemplate.fromTemplate(`${promptBasic}\nCurrent conversation:\n{chat_history}\nHuman: {input}\nAI:`);
+        const chain = new LLMChain({ llm, prompt, memory });
 
         this.sessions.set(userName, { chain, memory });
     }
