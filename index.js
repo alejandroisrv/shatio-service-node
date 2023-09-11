@@ -41,6 +41,7 @@ app.post('/w/:path', async (req, res) => {
     } catch (error) {
         logger.error("Error al procesar mensaje del usuario: " + error);
         res.status(500).send('Ha ocurrido un error al procesar mensaje del usuario.');
+        return false;
     }
 
     try {
