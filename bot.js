@@ -1,7 +1,7 @@
 const OpenAI = require('openai');
 const { escribirArchivo, leerArchivo } = require('./utils.js');
 const path = require('path');
-const logger = require('./logger.js')
+const logger = require('./logger.js');
 class ChatBot {
     constructor(bussines, clientName) {
         this.openai = new OpenAI({
@@ -39,6 +39,11 @@ class ChatBot {
         messages.push({ role: 'user', content: msg });
 
         try {
+
+            if (msg == null) {
+                throw new Error('No se puede obtener una respuesta para un mensaje en nulo');
+            }
+
             const completion = await this.openai.chat.completions.create({
                 messages,
                 model: 'gpt-3.5-turbo',
@@ -53,7 +58,7 @@ class ChatBot {
 
             escribirArchivo(this.pathHistory, JSON.stringify(messages.slice(1)));
 
-            console.log(completion);
+            logger.info(completion)
 
             return completion.choices[0].message.content;
         } catch (error) {

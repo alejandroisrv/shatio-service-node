@@ -38,9 +38,9 @@ app.post('/w/:path', async (req, res) => {
     await chatBot.getPrompt();
 
     log.info(JSON.stringify(req.body))
-    log.info(`Mensaje recibido de ${senderId}: ${message.text}`)
+    log.info(`Mensaje recibido de ${senderId}: ${message?.text}`)
 
-    respuesta = await chatBot.getResponseByChatGPT(message.text);
+    respuesta = await chatBot.getResponseByChatGPT(message?.text);
 
     if (respuesta === null) {
         log.error('Se ha producido un error al obtener la respuesta del bot')
