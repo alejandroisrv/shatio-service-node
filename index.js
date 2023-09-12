@@ -1,3 +1,4 @@
+const log = require('./logger.js');
 const app = require('./app.js');
 const ChatBot = require('./bot.js');
 const { sendMessageFacebook } = require('./facebook-api-graph.js');
@@ -36,12 +37,13 @@ app.post('/w/:path', async (req, res) => {
     await chatBot.getChatHistory();
     await chatBot.getPrompt();
 
-    console.error(req.body)
+    log.info(JSON.stringify(req.body))
+    log.info(`Mensaje recibido de ${senderId}: ${message.text}`)
 
     respuesta = await chatBot.getResponseByChatGPT(message.text);
 
     if (respuesta === null) {
-        console.error('Se ha producido un error al obtener la respuesta del bot');
+        log.error('Se ha producido un error al obtener la respuesta del bot')
         return res.status(500).send('Ha ocurrido un error al procesar mensaje del usuario.');
     }
 
@@ -50,6 +52,7 @@ app.post('/w/:path', async (req, res) => {
         return res.send({ fb: respuestaFB });
     } catch (error) {
         console.error(error);
+        log.error(error)
         return res.status(500).send('Ha ocurrido un error al enviar el mensaje a Facebook.');
     }
 });
