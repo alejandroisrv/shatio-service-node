@@ -26,7 +26,7 @@ class ChatBot {
 
         let messages = [];
 
-        if (!this.prompt) {
+        if (this.prompt == null) {
             console.error('Se ha producido un error al intentar obtener el prompt');
             return null
         }
@@ -38,6 +38,7 @@ class ChatBot {
         messages.unshift({ role: 'system', content: this.prompt })
         messages.push({ role: 'user', content: msg });
 
+        console.log(messages); 
 
         const completion = await this.openai.chat.completions.create({
             messages,

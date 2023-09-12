@@ -35,7 +35,7 @@ app.post('/w/:path', async (req, res) => {
     const chatBot = new ChatBot(path, senderId);
     await chatBot.getChatHistory();
     await chatBot.getPrompt();
-
+    
     respuesta = await chatBot.getResponseByChatGPT(message.text);
 
     if (respuesta === null) {
