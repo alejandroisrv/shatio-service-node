@@ -25,18 +25,19 @@ class ChatBot {
     async getResponseByChatGPT(msg) {
 
         let messages = [];
- 
-        try {
-            if (this.chatHistory) {
-                messages = JSON.parse(this.chatHistory);
-            }
 
-            messages.unshift({ role: 'system', content: this.prompt })
-            messages.push({ role: 'user', content: msg });
-
-        } catch (error) {
+        if (!this.prompt) {
             console.error('Se ha producido un error al intentar obtener el prompt');
+            return null
         }
+
+        if (this.chatHistory) {
+            messages = JSON.parse(this.chatHistory);
+        }
+
+        messages.unshift({ role: 'system', content: this.prompt })
+        messages.push({ role: 'user', content: msg });
+
 
         const completion = await this.openai.chat.completions.create({
             messages,
